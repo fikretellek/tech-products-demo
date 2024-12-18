@@ -100,3 +100,21 @@ it("lets the suggester assign a topic to the resource", () => {
 	cy.findByRole("heading", { level: 1 }).click();
 	cy.findByText("HTML/CSS").should("exist");
 });
+
+it("UI info message must be rendered according to user", () => {
+	cy.visit("/");
+	cy.logInAs("admin@codeyourfuture.io");
+	cy.findByRole("link", { name: /suggest/i }).click();
+	cy.findByText(
+		/Note that it will appear on the home page immediately, as you are an administrator./i
+	).should("exist");
+});
+
+it("UI info message must be rendered according to administrator", () => {
+	cy.visit("/");
+	cy.logInAs("shh@example.com");
+	cy.findByRole("link", { name: /suggest/i }).click();
+	cy.findByText(
+		/Note that it will not appear on the home page immediately, as it needs to be reviewed by an administrator./i
+	).should("exist");
+});
