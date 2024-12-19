@@ -120,6 +120,7 @@ it("UI info message must be rendered according to administrator", () => {
 });
 
 it("automatically publishes the suggestions from an administrator ", () => {
+	cy.seed("admin");
 	cy.visit("/");
 	cy.logInAs("admin@codeyourfuture.io");
 	cy.findByRole("link", { name: /suggest/i }).click();
