@@ -5,8 +5,11 @@ import userEvent from "@testing-library/user-event";
 import { http, HttpResponse } from "msw";
 
 import { server } from "../../../setupTests";
+import { usePrincipal } from "../../authContext";
 
 import Suggest from "./index";
+
+vi.mock("../../authContext");
 
 describe("Suggest", () => {
 	it("allows the user to submit a resource", async () => {
@@ -174,5 +177,23 @@ describe("Suggest", () => {
 
 		expect(screen.getByRole("textbox", { name: /title/i })).toHaveValue("");
 		expect(screen.getByRole("combobox", { name: /topic/i })).toHaveValue("");
+	});
+
+	it("renders info content specific to admin users", async () => {
+		usePrincipal.mockReturnValue({ is_admin: true });
+		render(<Suggest />);
+		const adminMessage = await screen.findByText(
+			/Note that it will appear on the home page immediately, as you are an administrator./i
+		);
+		expect(adminMessage).toBeInTheDocument();
+	});
+
+	it("renders info content specific to non-admin users", async () => {
+		usePrincipal.mockReturnValue({});
+		render(<Suggest />);
+		const nonAdminMessage = await screen.findByText(
+			/Note that it will not appear on the home page immediately, as it needs to be reviewed by an administrator./i
+		);
+		expect(nonAdminMessage).toBeInTheDocument();
 	});
 });
