@@ -15,7 +15,7 @@ export default function Suggest() {
 	const topicService = useService(TopicService);
 
 	const principal = usePrincipal();
-	const isAdmin = principal ? principal.name === "Cyf Admin" : false;
+	const isAdmin = principal?.is_admin;
 
 	useEffect(() => {
 		topicService.getTopics().then(setTopics);
@@ -43,21 +43,15 @@ export default function Suggest() {
 		[resourceService]
 	);
 
+	const publicationText = isAdmin
+		? "Note that it will appear on the home page immediately, as you are an administrator."
+		: "Note that it will not appear on the home page immediately, as it needs to be reviewed by an administrator.";
+
 	return (
 		<>
 			<h2>Suggest a resource</h2>
 			<p>Please use the form below to submit a suggestion. </p>
-			{isAdmin ? (
-				<p>
-					Note that it will appear on the home page immediately, as you are an
-					administrator.
-				</p>
-			) : (
-				<p>
-					Note that it will not appear on the home page immediately, as it needs
-					to be reviewed by an administrator.
-				</p>
-			)}
+			<p>{publicationText}</p>
 
 			<section>
 				{message && <Message {...message} />}
