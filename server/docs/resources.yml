@@ -39,7 +39,10 @@
         $ref: "#/components/responses/InternalServerError"
   post:
     tags: [Resources]
-    description: Share a new resource.
+    description: |
+      Share a new resource. 
+
+      **Note**: A resource created by an admin user gets auto-published.
     security:
       - authCookie: []
     requestBody:
