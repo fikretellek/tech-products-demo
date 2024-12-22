@@ -31,6 +31,38 @@ describe("/api/resources", () => {
 			});
 		});
 
+		it("verifies returned resource as published created by an admin", async () => {
+			const {
+				agent,
+				user: { id },
+			} = await authenticateAs("admin");
+			const resource = {
+				title: "CYF Syllabus",
+				url: "https://syllabus.codeyourfuture.io/",
+			};
+
+			const { body } = await agent
+				.post("/api/resources")
+				.send(resource)
+				.set("User-Agent", "supertest")
+				.expect(201);
+
+			const idValue = expect.stringMatching(patterns.UUID);
+			const accessionValue = expect.stringMatching(patterns.DATETIME);
+
+			expect(body).toMatchObject({
+				accession: accessionValue,
+				description: null,
+				draft: false,
+				id: idValue,
+				source: id,
+				title: resource.title,
+				url: resource.url,
+				publisher: idValue,
+				publication: accessionValue,
+			});
+		});
+
 		it("accepts a description", async () => {
 			const { agent } = await authenticateAs("user");
 			const resource = {
