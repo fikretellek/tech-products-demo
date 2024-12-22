@@ -2,7 +2,6 @@ import { Router } from "express";
 import { Joi } from "express-validation";
 
 import { topicsService } from "../topics";
-import { usersService } from "../users";
 import logger from "../utils/logger";
 import {
 	asyncHandler,
@@ -49,8 +48,6 @@ router
 			const { id: source } = req.user;
 			try {
 				const resource = await service.create({ ...req.body, source });
-				const validated_admin = await usersService.validateAdmin(source);
-				validated_admin && (await service.publish(resource.id, source));
 				res.status(201).send(resource);
 			} catch (err) {
 				if (err instanceof DuplicateResource) {

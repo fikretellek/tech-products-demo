@@ -30,8 +30,3 @@ export async function promote(id) {
 	await getById(id);
 	return await repository.update(id, { is_admin: true });
 }
-
-export async function validateAdmin(id) {
-	const user = await getById(id);
-	return user.is_admin;
-}
